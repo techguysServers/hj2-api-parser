@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="jobs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="job" type="ICIMSJobType" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="ICIMSJobType">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Format: jobId-langCode (e.g., "12345-fr" or "12345-en")</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="title" type="xs:string"/>
+      <xs:element name="description" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+            May contain embedded metadata in a hidden div.
+            Format: &lt;div class="hide-me"&gt;&lt;b&gt;Horaire&lt;/b&gt; value&lt;br&gt;...&lt;/div&gt;Description content
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="url" type="xs:anyURI"/>
+      <xs:element name="brand" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Company/Hotel brand name</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="location" type="ICIMSLocationType"/>
+      <xs:element name="categories" type="ICIMSCategoriesType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ICIMSLocationType">
+    <xs:sequence>
+      <xs:element name="city" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>If empty, city is extracted from description metadata</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="state" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Province code. Only QC/QB jobs are imported.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ICIMSCategoriesType">
+    <xs:sequence>
+      <xs:element name="category" type="xs:string" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Categories separated by ' &amp; ' in content</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

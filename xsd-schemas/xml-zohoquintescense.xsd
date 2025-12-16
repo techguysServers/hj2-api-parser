@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="jobs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="job" type="ZohoQuintessenceJobType" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="ZohoQuintessenceJobType">
+    <xs:sequence>
+      <xs:element name="referencenumber" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Unique job identifier (required)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="title" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Job title (required)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="description" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Job description (required)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="company" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Company name (required)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="category" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Job category (comma-separated for multiple)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="type" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Employment type: Full-time, Part-time, etc.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="city" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>City name (comma-separated for multiple) (required)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="state" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Province code (required)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="postalcode" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Postal code</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="url" type="xs:anyURI">
+        <xs:annotation>
+          <xs:documentation>Application URL (required)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="records">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="record" type="PScoutRecordType" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="PScoutRecordType">
+    <xs:sequence>
+      <xs:element name="field" type="PScoutFieldType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PScoutFieldType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="name" type="PScoutFieldNameType" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:simpleType name="PScoutFieldNameType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="JobReferenceNumber">
+        <xs:annotation>
+          <xs:documentation>Unique job identifier (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="JobTitle_FR">
+        <xs:annotation>
+          <xs:documentation>French job title (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="JobTitle_EN">
+        <xs:annotation>
+          <xs:documentation>English job title (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="JobDescription_FR">
+        <xs:annotation>
+          <xs:documentation>French job description (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="JobDescription_EN">
+        <xs:annotation>
+          <xs:documentation>English job description (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="JobQualification_FR">
+        <xs:annotation>
+          <xs:documentation>French job requirements (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="JobQualification_EN">
+        <xs:annotation>
+          <xs:documentation>English job requirements (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Schedule">
+        <xs:annotation>
+          <xs:documentation>Employment type, separated by ' - ' (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Category">
+        <xs:annotation>
+          <xs:documentation>Job category (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PrimaryCity">
+        <xs:annotation>
+          <xs:documentation>City name, comma-separated for multiple (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PrimaryState">
+        <xs:annotation>
+          <xs:documentation>Province/State code (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PropertyBrand">
+        <xs:annotation>
+          <xs:documentation>Company/Brand name (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="URLforJobPosting">
+        <xs:annotation>
+          <xs:documentation>Application URL (required)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

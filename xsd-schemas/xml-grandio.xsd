@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="jobs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="job" type="GrandioJobType" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="GrandioJobType">
+    <xs:sequence>
+      <xs:element name="businessProcessId" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Unique identifier for the job posting</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="jobCode" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Job code containing language indicator (must include 'fr' or 'en')</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="title" type="xs:string"/>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="applyUrl" type="xs:anyURI"/>
+      <xs:element name="Restaurant" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Restaurant/Company name</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Position" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Position category (comma-separated for multiple)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Schedule" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Employment type: Full-time, Part-time, Seasonal, etc.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="city" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Comma-separated city names</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="state" type="xs:string"/>
+      <xs:element name="postalCode" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

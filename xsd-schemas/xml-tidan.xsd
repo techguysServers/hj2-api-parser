@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="jobs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="job" type="TidanJobType" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="TidanJobType">
+    <xs:sequence>
+      <xs:element name="businessProcessId" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Unique identifier for the job posting</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="jobCode" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Job code containing language indicator (must include 'fr' or 'en')</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="title" type="xs:string"/>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="education" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Education requirements (combined into requirements field)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="experience" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Experience requirements (combined into requirements field)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="applyUrl" type="xs:anyURI"/>
+      <xs:element name="company" type="xs:string"/>
+      <xs:element name="categorie1" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Primary job category</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="categorie2" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Secondary job category</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="categorie3" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Tertiary job category</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="typedemploi" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Employment type (French): Temps-plein, Temps-partiel, Saisonnier, etc.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ville" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>City name (comma-separated for multiple)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="province" type="xs:string"/>
+      <xs:element name="codepostal" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

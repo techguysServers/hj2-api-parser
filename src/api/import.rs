@@ -1,48 +1,12 @@
-use axum::{body::Bytes, extract::Multipart, http::StatusCode, Json};
-use serde::{Serialize};
+use axum::{Json, body::Bytes, extract::Multipart, http::StatusCode};
 use log::{info, warn};
+use serde::Serialize;
 
-use crate::utils::parse_xmlhotelleriejobs;
-
-#[derive(Serialize)]
-pub struct Company {
-    pub id: String,
-    pub name: String,
-    pub city: String,
-    pub postal_code: String,
-    pub logo_url: String,
-}
-
-#[derive(Serialize)]
-pub struct Translation {
-    pub language: String,
-    pub title: String,
-    pub description: String,
-    pub requirements: String,
-}
-
-#[derive(Serialize)]
-pub struct Job {
-    pub id: String,
-    pub schedule: String,
-    pub category: String,
-    pub city: String,
-    pub province: String,
-    pub application_method: String,
-    pub application_destination: String,
-    pub company: Company,
-    pub translations: Vec<Translation>,
-}
-
-#[derive(Serialize, Debug)]
-pub struct XMLError {
-    pub line: i32,
-    pub column: i32,
-    pub message: String,
-    pub level: String,
-    pub domain: String,
-    pub code: i32,
-}
+use crate::utils::{
+    common::{Job, XMLError},
+    parse_xmlgrandio, parse_xmlhotelleriejobs, parse_xmlpscout, parse_xmltidan,
+    parse_xmlzohoquintescense, parse_xmlzohorecruit,
+};
 
 #[derive(Serialize)]
 pub struct ImportResponse {
@@ -55,15 +19,17 @@ pub struct ImportResponse {
 pub async fn handler(multipart: Multipart) -> (StatusCode, Json<ImportResponse>) {
     let (format, file) = read_multipart(multipart).await;
 
-
     if format.is_none() || file.is_none() {
         warn!(target: "import", "Request to import, format or file is missing");
-        return (StatusCode::BAD_REQUEST, Json(ImportResponse {
-            success: false,
-            errors: "Format or file is missing".to_string(),
-            xml_errors: vec![],
-            jobs: vec![],
-        }));
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(ImportResponse {
+                success: false,
+                errors: "Format or file is missing".to_string(),
+                xml_errors: vec![],
+                jobs: vec![],
+            }),
+        );
     }
 
     info!(target: "import", "Request to parse an {:?} file", format.clone().unwrap());
@@ -72,32 +38,183 @@ pub async fn handler(multipart: Multipart) -> (StatusCode, Json<ImportResponse>)
         "xml-hotelleriejobs" => {
             let jobs = parse_xmlhotelleriejobs::parse(file.as_ref().unwrap());
             if let Err(errors) = jobs {
-                warn!(target: "import", "Error parsing file: {:?}", errors.message);
-                return (StatusCode::BAD_REQUEST, Json(ImportResponse {
-                    success: false,
-                    errors: errors.message,
-                    xml_errors: errors.xml_errors,
-                    jobs: vec![],
-                }));
+                warn!(target: "import", "Error parsing file: {:?} (xml-hotelleriejobs)", errors.message);
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(ImportResponse {
+                        success: false,
+                        errors: errors.message,
+                        xml_errors: errors.xml_errors,
+                        jobs: vec![],
+                    }),
+                );
             }
 
             info!(target: "import", "File parsed successfully");
 
-            return (StatusCode::OK, Json(ImportResponse {
-                success: true,
-                errors: "".to_string(),
-                xml_errors: vec![],
-                jobs: jobs.unwrap(),
-            }));
+            return (
+                StatusCode::OK,
+                Json(ImportResponse {
+                    success: true,
+                    errors: "".to_string(),
+                    xml_errors: vec![],
+                    jobs: jobs.unwrap(),
+                }),
+            );
+        }
+        "xml-icims" => {
+            warn!(target: "import", "icims format is not implemented yet");
+            return (
+                StatusCode::NOT_IMPLEMENTED,
+                Json(ImportResponse {
+                    success: false,
+                    errors: "icims format is no longer supported".to_string(),
+                    xml_errors: vec![],
+                    jobs: vec![],
+                }),
+            );
+        }
+        "xml-grandio" => {
+            let jobs = parse_xmlgrandio::parse(file.as_ref().unwrap());
+            if let Err(errors) = jobs {
+                warn!(target: "import", "Error parsing fril: {:?} (xml-grandio)", errors.message);
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(ImportResponse {
+                        success: false,
+                        errors: errors.message,
+                        xml_errors: errors.xml_errors,
+                        jobs: vec![],
+                    }),
+                );
+            }
+
+            info!(target: "import", "File parsed successfully (xml-grandio)");
+            return (
+                StatusCode::OK,
+                Json(ImportResponse {
+                    success: true,
+                    errors: "".to_string(),
+                    xml_errors: vec![],
+                    jobs: jobs.unwrap(),
+                }),
+            );
+        }
+        "xml-tidan" => {
+            let jobs = parse_xmltidan::parse(file.as_ref().unwrap());
+            if let Err(errors) = jobs {
+                warn!(target: "import", "Error parsing file: {:?} (xml-tidan)", errors.message);
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(ImportResponse {
+                        success: false,
+                        errors: errors.message,
+                        xml_errors: errors.xml_errors,
+                        jobs: vec![],
+                    }),
+                );
+            }
+
+            info!(target: "import", "File parsed successfully (xml-tidan)");
+            return (
+                StatusCode::OK,
+                Json(ImportResponse {
+                    success: true,
+                    errors: "".to_string(),
+                    xml_errors: vec![],
+                    jobs: jobs.unwrap(),
+                }),
+            );
+        }
+        "xml-pscout" => {
+            let jobs = parse_xmlpscout::parse(file.as_ref().unwrap());
+            if let Err(errors) = jobs {
+                warn!(target: "import", "Error parsing file: {:?} (xml-pscout)", errors.message);
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(ImportResponse {
+                        success: false,
+                        errors: errors.message,
+                        xml_errors: errors.xml_errors,
+                        jobs: vec![],
+                    }),
+                );
+            }
+
+            info!(target: "import", "File parsed successfully (xml-pscout)");
+            return (
+                StatusCode::OK,
+                Json(ImportResponse {
+                    success: true,
+                    errors: "".to_string(),
+                    xml_errors: vec![],
+                    jobs: jobs.unwrap(),
+                }),
+            );
+        }
+        "xml-zohoquintescence" => {
+            let jobs = parse_xmlzohoquintescense::parse(file.as_ref().unwrap());
+            if let Err(errors) = jobs {
+                warn!(target: "import", "Error parsing file: {:?} (xml-zohoquintescence)", errors.message);
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(ImportResponse {
+                        success: false,
+                        errors: errors.message,
+                        xml_errors: errors.xml_errors,
+                        jobs: vec![],
+                    }),
+                );
+            }
+
+            info!(target: "import", "File parsed successfully (xml-zohoquintescence)");
+            return (
+                StatusCode::OK,
+                Json(ImportResponse {
+                    success: true,
+                    errors: "".to_string(),
+                    xml_errors: vec![],
+                    jobs: jobs.unwrap(),
+                }),
+            );
+        }
+        "xml-zohorecruit" => {
+            let jobs = parse_xmlzohorecruit::parse(file.as_ref().unwrap());
+            if let Err(errors) = jobs {
+                warn!(target: "import", "Error parsing file: {:?} (xml-zohorecruit)", errors.message);
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(ImportResponse {
+                        success: false,
+                        errors: errors.message,
+                        xml_errors: errors.xml_errors,
+                        jobs: vec![],
+                    }),
+                );
+            }
+
+            info!(target: "import", "File parsed successfully (xml-zohorecruit)");
+            return (
+                StatusCode::OK,
+                Json(ImportResponse {
+                    success: true,
+                    errors: "".to_string(),
+                    xml_errors: vec![],
+                    jobs: jobs.unwrap(),
+                }),
+            );
         }
         _ => {
             warn!(target: "import", "Format is not supported");
-            return (StatusCode::BAD_REQUEST, Json(ImportResponse {
-                success: false,
-                errors: "Format is not supported".to_string(),
-                xml_errors: vec![],
-                jobs: vec![],
-            }));
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(ImportResponse {
+                    success: false,
+                    errors: "Format is not supported".to_string(),
+                    xml_errors: vec![],
+                    jobs: vec![],
+                }),
+            );
         }
     }
 }
