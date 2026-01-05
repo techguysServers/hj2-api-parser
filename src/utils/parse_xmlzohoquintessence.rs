@@ -6,7 +6,7 @@ use libxml::tree::Document;
 use crate::utils::common::{self, Company, Job, Translation};
 
 pub fn parse(file: &Bytes) -> Result<Vec<Job>, common::ParseError> {
-    let document = common::validate_against_xsd(file, "xsd-schemas/xml-zohoquintescense.xsd");
+    let document = common::validate_against_xsd(file, "xsd-schemas/xml-zohoquintessence.xsd");
 
     if let Err(errors) = document {
         return Err(common::ParseError {

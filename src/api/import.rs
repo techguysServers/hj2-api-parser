@@ -5,7 +5,7 @@ use serde::Serialize;
 use crate::utils::{
     common::{Job, XMLError},
     parse_xmlgrandio, parse_xmlhotelleriejobs, parse_xmlpscout, parse_xmltidan,
-    parse_xmlzohoquintescense, parse_xmlzohorecruit,
+    parse_xmlzohoquintessence, parse_xmlzohorecruit,
 };
 
 #[derive(Serialize)]
@@ -152,10 +152,10 @@ pub async fn handler(multipart: Multipart) -> (StatusCode, Json<ImportResponse>)
                 }),
             );
         }
-        "xml-zohoquintescence" => {
-            let jobs = parse_xmlzohoquintescense::parse(file.as_ref().unwrap());
+        "xml-zohoquintessence" => {
+            let jobs = parse_xmlzohoquintessence::parse(file.as_ref().unwrap());
             if let Err(errors) = jobs {
-                warn!(target: "import", "Error parsing file: {:?} (xml-zohoquintescence)", errors.message);
+                warn!(target: "import", "Error parsing file: {:?} (xml-zohoquintessence)", errors.message);
                 return (
                     StatusCode::BAD_REQUEST,
                     Json(ImportResponse {
@@ -167,7 +167,7 @@ pub async fn handler(multipart: Multipart) -> (StatusCode, Json<ImportResponse>)
                 );
             }
 
-            info!(target: "import", "File parsed successfully (xml-zohoquintescence)");
+            info!(target: "import", "File parsed successfully (xml-zohoquintessence)");
             return (
                 StatusCode::OK,
                 Json(ImportResponse {
