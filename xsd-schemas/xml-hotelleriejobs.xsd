@@ -1,79 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <!-- Root element: <jobs> -->
-  <xs:element name="jobs">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="job" maxOccurs="unbounded">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="unique_id" type="xs:string"/>
+  <!-- Root can be either <jobs> or <source> -->
+  <xs:element name="source" type="SourceType"/>
+  <xs:element name="jobs" type="JobsContainerType"/>
 
-              <xs:element name="title" maxOccurs="unbounded" minOccurs="0">
-                <xs:complexType mixed="true">
-                  <xs:simpleContent>
-                    <xs:extension base="xs:string">
-                      <xs:attribute name="lang" use="required" type="xs:string"/>
-                    </xs:extension>
-                  </xs:simpleContent>
-                </xs:complexType>
-              </xs:element>
+  <!-- Source wrapper (Folks ATS style) -->
+  <xs:complexType name="SourceType">
+    <xs:sequence>
+      <xs:element name="publisher" type="xs:string" minOccurs="0"/>
+      <xs:element name="publisherurl" type="xs:anyURI" minOccurs="0"/>
+      <xs:element name="job" type="JobType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
 
-              <xs:element name="description" maxOccurs="unbounded" minOccurs="0">
-                <xs:complexType mixed="true">
-                  <xs:simpleContent>
-                    <xs:extension base="xs:string">
-                      <xs:attribute name="lang" use="required" type="xs:string"/>
-                    </xs:extension>
-                  </xs:simpleContent>
-                </xs:complexType>
-              </xs:element>
+  <!-- Simple jobs wrapper -->
+  <xs:complexType name="JobsContainerType">
+    <xs:sequence>
+      <xs:element name="job" type="JobType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
 
-              <xs:element name="requirements" maxOccurs="unbounded" minOccurs="0">
-                <xs:complexType mixed="true">
-                  <xs:simpleContent>
-                    <xs:extension base="xs:string">
-                      <xs:attribute name="lang" use="required" type="xs:string"/>
-                    </xs:extension>
-                  </xs:simpleContent>
-                </xs:complexType>
-              </xs:element>
+  <!-- Job definition - flexible to handle real-world variations -->
+  <xs:complexType name="JobType">
+    <xs:sequence>
+      <!-- Required: Unique identifier -->
+      <xs:element name="unique_id" type="xs:string"/>
 
-              <xs:element name="schedule" type="xs:string"/>
-              <xs:element name="category" type="xs:string"/>
-              <xs:element name="company" type="xs:string"/>
-              <xs:element name="company_id" type="xs:string"/>
-              <xs:element name="company_city" type="xs:string"/>
-              <xs:element name="company_postal_code" type="xs:string"/>
-              <xs:element name="company_logo_url" type="xs:string"/>
-              <xs:element name="city" type="xs:string"/>
-              <xs:element name="province" type="xs:string"/>
-              <xs:element name="application_method" type="xs:string"/>
-              <xs:element name="application_destination" type="xs:string"/>
-            </xs:sequence>
-          </xs:complexType>
+      <!-- Title: 1-2 occurrences, lang attribute optional -->
+      <xs:element name="title" type="LocalizedTextType" minOccurs="1" maxOccurs="2"/>
 
-          <!-- Unique lang constraints must be declared here -->
-          <xs:unique name="uniqueTitleLang">
-            <xs:selector xpath="title"/>
-            <xs:field xpath="@lang"/>
-          </xs:unique>
+      <!-- Description: 1-2 occurrences, lang attribute optional -->
+      <xs:element name="description" type="LocalizedTextType" minOccurs="1" maxOccurs="2"/>
 
-          <xs:unique name="uniqueDescriptionLang">
-            <xs:selector xpath="description"/>
-            <xs:field xpath="@lang"/>
-          </xs:unique>
+      <!-- Requirements: Optional, 0-2 occurrences -->
+      <xs:element name="requirements" type="LocalizedTextType" minOccurs="0" maxOccurs="2"/>
 
-          <xs:unique name="uniqueRequirementsLang">
-            <xs:selector xpath="requirements"/>
-            <xs:field xpath="@lang"/>
-          </xs:unique>
+      <!-- Schedule: Employment type -->
+      <xs:element name="schedule" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Comma or "et" separated values.
+            Values: Full-time, Part-time, Seasonal, Internship, Temporary,
+                    Temps-plein, Temps-partiel, Saisonnier, Occasionnel
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
 
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+      <!-- Category: Job category -->
+      <xs:element name="category" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Comma-separated categories.
+            HotellerieJobs: Hospitality, Food services, Tourism, Spa and Wellness,
+                           Events, Health, Food Truck, Administrative, Outdoors, Other
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <!-- Company name -->
+      <xs:element name="company" type="xs:string" minOccurs="0"/>
+
+      <!-- Company ID: Can be numeric ID or email address -->
+      <xs:element name="company_id" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Identifier for the company. Can be:
+            - Numeric ID (e.g., "12345")
+            - Email address (e.g., "contact@company.com")
+            Used for company matching/creation when importer has no fixed company.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <!-- Optional company details for auto-creation -->
+      <xs:element name="company_city" type="xs:string" minOccurs="0"/>
+      <xs:element name="company_postal_code" type="xs:string" minOccurs="0"/>
+      <xs:element name="company_logo_url" type="xs:anyURI" minOccurs="0"/>
+
+      <!-- Location -->
+      <xs:element name="city" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Comma-separated city names for multiple locations</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="province" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Province name or code: Québec, Quebec, QC</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <!-- Application method -->
+      <xs:element name="application_method" type="ApplicationMethodType"/>
+      <xs:element name="application_destination" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Email address (if method=email) or URL (if method=url)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Localized text with optional lang attribute -->
+  <xs:complexType name="LocalizedTextType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="lang" type="LanguageType" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              If omitted, content is treated as French.
+              Parser handles feeds without lang attributes (e.g., Restos-Plaisir case).
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:simpleType name="LanguageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="fr"/>
+      <xs:enumeration value="en"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ApplicationMethodType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="url"/>
+      <xs:enumeration value="email"/>
+    </xs:restriction>
+  </xs:simpleType>
 
 </xs:schema>

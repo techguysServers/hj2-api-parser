@@ -31,7 +31,11 @@ pub fn parse(file: &Bytes) -> Result<Vec<Job>, common::ParseError> {
 
 fn parse_into_jobs(document: &Document) -> Result<Vec<Job>, String> {
     let root = document.get_root_element().unwrap();
-    let children = root.get_child_elements();
+
+    // Get <job> nodes
+    let children = root
+        .findnodes("job")
+        .map_err(|e| format!("Error finding job nodes: {:?}", e))?;
     let jobs = children
         .iter()
         .map(|job| {
@@ -111,22 +115,52 @@ fn parse_into_jobs(document: &Document) -> Result<Vec<Job>, String> {
             }
 
             Job {
-                id: dictionary.get("unique_id").unwrap().to_string(),
-                schedule: dictionary.get("schedule").unwrap().to_string(),
-                category: dictionary.get("category").unwrap().to_string(),
-                city: dictionary.get("city").unwrap().to_string(),
-                province: dictionary.get("province").unwrap().to_string(),
-                application_method: dictionary.get("application_method").unwrap().to_string(),
+                id: dictionary
+                    .get("unique_id")
+                    .unwrap_or(&String::new())
+                    .to_string(),
+                schedule: dictionary
+                    .get("schedule")
+                    .unwrap_or(&String::new())
+                    .to_string(),
+                category: dictionary
+                    .get("category")
+                    .unwrap_or(&String::new())
+                    .to_string(),
+                city: dictionary.get("city").unwrap_or(&String::new()).to_string(),
+                province: dictionary
+                    .get("province")
+                    .unwrap_or(&String::new())
+                    .to_string(),
+                application_method: dictionary
+                    .get("application_method")
+                    .unwrap_or(&String::new())
+                    .to_string(),
                 application_destination: dictionary
                     .get("application_destination")
-                    .unwrap()
+                    .unwrap_or(&String::new())
                     .to_string(),
                 company: Company {
-                    id: dictionary.get("company_id").unwrap().to_string(),
-                    name: dictionary.get("company").unwrap().to_string(),
-                    city: dictionary.get("company_city").unwrap().to_string(),
-                    postal_code: dictionary.get("company_postal_code").unwrap().to_string(),
-                    logo_url: dictionary.get("company_logo_url").unwrap().to_string(),
+                    id: dictionary
+                        .get("company_id")
+                        .unwrap_or(&String::new())
+                        .to_string(),
+                    name: dictionary
+                        .get("company")
+                        .unwrap_or(&String::new())
+                        .to_string(),
+                    city: dictionary
+                        .get("company_city")
+                        .unwrap_or(&String::new())
+                        .to_string(),
+                    postal_code: dictionary
+                        .get("company_postal_code")
+                        .unwrap_or(&String::new())
+                        .to_string(),
+                    logo_url: dictionary
+                        .get("company_logo_url")
+                        .unwrap_or(&String::new())
+                        .to_string(),
                 },
                 translations: translations,
             }
