@@ -1,66 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <xs:element name="jobs">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="job" type="ZohoQuintessenceJobType" maxOccurs="unbounded"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+  <!-- Root can be either <jobs> or <source> -->
+  <xs:element name="source" type="SourceContainerType"/>
+  <xs:element name="jobs" type="JobsContainerType"/>
+
+  <!-- Source wrapper (common in Zoho feeds) -->
+  <xs:complexType name="SourceContainerType">
+    <xs:sequence>
+      <xs:element name="job" type="ZohoQuintessenceJobType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Jobs wrapper (alternative) -->
+  <xs:complexType name="JobsContainerType">
+    <xs:sequence>
+      <xs:element name="job" type="ZohoQuintessenceJobType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
 
   <xs:complexType name="ZohoQuintessenceJobType">
     <xs:sequence>
-      <xs:element name="referencenumber" type="xs:string">
-        <xs:annotation>
-          <xs:documentation>Unique job identifier (required)</xs:documentation>
-        </xs:annotation>
-      </xs:element>
+      <!-- === REQUIRED FIELDS === -->
+
       <xs:element name="title" type="xs:string">
         <xs:annotation>
-          <xs:documentation>Job title (required)</xs:documentation>
+          <xs:documentation>Job title (French). Required.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="description" type="xs:string">
+
+      <xs:element name="date" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Job description (required)</xs:documentation>
+          <xs:documentation>
+            Publication date. Format: DD/MM/YYYY
+            Note: This field is present in feed but IGNORED by parser.
+          </xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="company" type="xs:string">
+
+      <xs:element name="referencenumber" type="xs:string">
         <xs:annotation>
-          <xs:documentation>Company name (required)</xs:documentation>
+          <xs:documentation>Unique job identifier. Required.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="category" type="xs:string" minOccurs="0">
-        <xs:annotation>
-          <xs:documentation>Job category (comma-separated for multiple)</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="type" type="xs:string" minOccurs="0">
-        <xs:annotation>
-          <xs:documentation>Employment type: Full-time, Part-time, etc.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="city" type="xs:string">
-        <xs:annotation>
-          <xs:documentation>City name (comma-separated for multiple) (required)</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="state" type="xs:string">
-        <xs:annotation>
-          <xs:documentation>Province code (required)</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="postalcode" type="xs:string" minOccurs="0">
-        <xs:annotation>
-          <xs:documentation>Postal code</xs:documentation>
-        </xs:annotation>
-      </xs:element>
+
       <xs:element name="url" type="xs:anyURI">
         <xs:annotation>
-          <xs:documentation>Application URL (required)</xs:documentation>
+          <xs:documentation>Application URL. Required.</xs:documentation>
         </xs:annotation>
       </xs:element>
+
+      <xs:element name="company" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Company name. Required for company creation.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="city" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>City name. Comma-separated for multiple locations.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="state" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Province code (e.g., QC, ON).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="country" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Country name (e.g., Canada).
+            Note: This field is present in feed but IGNORED by parser.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="postalcode" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Postal code (e.g., J8E 1B1).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="description" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+            Job description in HTML format. Required.
+            Typically contains responsibilities, requirements, and benefits.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <!-- === OPTIONAL FIELDS === -->
+
+      <xs:element name="category" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Job category. Comma-separated for multiple.
+            If missing, defaults to "Other".
+            Examples: Services de restauration / alimentaires, Hôtellerie
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="type" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Employment type. Comma-separated for multiple.
+            If missing, defaults to "Full-time".
+            Values: Temps-plein, Temps-partiel, Saisonnier, Full-time, Part-time, Seasonal
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
     </xs:sequence>
   </xs:complexType>
 

@@ -1,86 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <xs:element name="jobs">
-    <xs:complexType>
+<!-- Root can be either <jobs> or <source> -->
+<xs:element name="source" type="SourceContainerType"/>
+<xs:element name="jobs" type="JobsContainerType"/>
+
+<!-- Source wrapper (common in Zoho feeds) -->
+<xs:complexType name="SourceContainerType">
+  <xs:sequence>
+    <xs:element name="job" type="JobType" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+  <!-- Root element -->
+    <xs:complexType name="JobsContainerType">
       <xs:sequence>
-        <xs:element name="job" type="ZohoJobType" maxOccurs="unbounded"/>
+        <xs:element name="job" type="JobType" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
-  </xs:element>
 
-  <xs:complexType name="ZohoJobType">
+  <!-- Job type definition -->
+  <xs:complexType name="JobType">
     <xs:sequence>
-      <xs:element name="Field" type="ZohoFieldType" maxOccurs="unbounded"/>
+      <xs:element name="Field" type="FieldType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="ZohoFieldType">
+  <!-- Field type with any name attribute value -->
+  <xs:complexType name="FieldType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute name="name" type="ZohoFieldNameType" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-
-  <xs:simpleType name="ZohoFieldNameType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Reference Number">
-        <xs:annotation>
-          <xs:documentation>Unique job identifier (required)</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="Titre de la publication">
-        <xs:annotation>
-          <xs:documentation>Job title in French (required)</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="Description du poste">
-        <xs:annotation>
-          <xs:documentation>Job description in French (required)</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="Résidence">
-        <xs:annotation>
-          <xs:documentation>Company/Residence name (required)</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="Ville">
-        <xs:annotation>
-          <xs:documentation>City name (required)</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="Région">
-        <xs:annotation>
-          <xs:documentation>Region - used as city if value is "Montréal"</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="État/Province">
-        <xs:annotation>
-          <xs:documentation>Province code (required)</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="Code postal">
-        <xs:annotation>
-          <xs:documentation>Postal code</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="Type d'emploi">
-        <xs:annotation>
-          <xs:documentation>Employment type in French</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="Secteur d'activité">
-        <xs:annotation>
-          <xs:documentation>Job category/sector</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="url">
-        <xs:annotation>
-          <xs:documentation>Application URL (required)</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-    </xs:restriction>
-  </xs:simpleType>
 
 </xs:schema>
