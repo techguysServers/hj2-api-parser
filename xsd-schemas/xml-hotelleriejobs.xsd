@@ -23,21 +23,21 @@
 
   <!-- Job definition - flexible to handle real-world variations -->
   <xs:complexType name="JobType">
-    <xs:sequence>
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
       <!-- Required: Unique identifier -->
       <xs:element name="unique_id" type="xs:string"/>
 
       <!-- Title: 1-2 occurrences, lang attribute optional -->
-      <xs:element name="title" type="LocalizedTextType" minOccurs="1" maxOccurs="2"/>
+      <xs:element name="title" type="LocalizedTextType"/>
 
       <!-- Description: 1-2 occurrences, lang attribute optional -->
-      <xs:element name="description" type="LocalizedTextType" minOccurs="1" maxOccurs="2"/>
+      <xs:element name="description" type="LocalizedTextType"/>
 
       <!-- Requirements: Optional, 0-2 occurrences -->
-      <xs:element name="requirements" type="LocalizedTextType" minOccurs="0" maxOccurs="2"/>
+      <xs:element name="requirements" type="LocalizedTextType"/>
 
       <!-- Schedule: Employment type -->
-      <xs:element name="schedule" type="xs:string" minOccurs="0">
+      <xs:element name="schedule" type="xs:string">
         <xs:annotation>
           <xs:documentation>
             Comma or "et" separated values.
@@ -48,7 +48,7 @@
       </xs:element>
 
       <!-- Category: Job category -->
-      <xs:element name="category" type="xs:string" minOccurs="0">
+      <xs:element name="category" type="xs:string">
         <xs:annotation>
           <xs:documentation>
             Comma-separated categories.
@@ -59,10 +59,10 @@
       </xs:element>
 
       <!-- Company name -->
-      <xs:element name="company" type="xs:string" minOccurs="0"/>
+      <xs:element name="company" type="xs:string"/>
 
       <!-- Company ID: Can be numeric ID or email address -->
-      <xs:element name="company_id" type="xs:string" minOccurs="0">
+      <xs:element name="company_id" type="xs:string">
         <xs:annotation>
           <xs:documentation>
             Identifier for the company. Can be:
@@ -74,17 +74,17 @@
       </xs:element>
 
       <!-- Optional company details for auto-creation -->
-      <xs:element name="company_city" type="xs:string" minOccurs="0"/>
-      <xs:element name="company_postal_code" type="xs:string" minOccurs="0"/>
-      <xs:element name="company_logo_url" type="xs:anyURI" minOccurs="0"/>
+      <xs:element name="company_city" type="xs:string"/>
+      <xs:element name="company_postal_code" type="xs:string"/>
+      <xs:element name="company_logo_url" type="xs:anyURI"/>
 
       <!-- Location -->
-      <xs:element name="city" type="xs:string" minOccurs="0">
+      <xs:element name="city" type="xs:string">
         <xs:annotation>
           <xs:documentation>Comma-separated city names for multiple locations</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="province" type="xs:string" minOccurs="0">
+      <xs:element name="province" type="xs:string">
         <xs:annotation>
           <xs:documentation>Province name or code: Québec, Quebec, QC</xs:documentation>
         </xs:annotation>
@@ -97,8 +97,8 @@
           <xs:documentation>Email address (if method=email) or URL (if method=url)</xs:documentation>
         </xs:annotation>
       </xs:element>
-    </xs:sequence>
-  </xs:complexType>
+      </xs:choice>
+    </xs:complexType>
 
   <!-- Localized text with optional lang attribute -->
   <xs:complexType name="LocalizedTextType">
