@@ -26,11 +26,9 @@ pub fn parse(file: &Bytes) -> Result<Vec<Job>, common::ParseError> {
 
 fn parse_into_jobs(document: &Document) -> Result<Vec<Job>, String> {
     let root = document.get_root_element().unwrap();
-    println!("{}", document.to_string());
     let children = root
         .findnodes("job")
         .map_err(|e| format!("Error finding job nodes: {:?}", e))?;
-    println!("Found {} job nodes", children.len());
     let jobs = children
         .iter()
         .map(|job| {
@@ -79,6 +77,10 @@ fn parse_into_jobs(document: &Document) -> Result<Vec<Job>, String> {
                         .to_string(),
                     description: dictionary
                         .get("description")
+                        .unwrap_or(&String::new())
+                        .to_string(),
+                    requirements: dictionary
+                        .get("experience")
                         .unwrap_or(&String::new())
                         .to_string(),
                     ..Default::default()
