@@ -1,30 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <xs:element name="jobs">
-    <xs:complexType>
+<!-- Root can be either <jobs> or <source> -->
+<xs:element name="source" type="SourceType"/>
+<xs:element name="jobs" type="JobsContainerType"/>
+
+<!-- Source wrapper (Folks ATS style) -->
+<xs:complexType name="SourceType">
+  <xs:sequence>
+    <xs:element name="lastBuildDate" type="xs:string" minOccurs="0"/>
+    <xs:element name="publisherUrl" type="xs:anyURI" minOccurs="0"/>
+    <xs:element name="publisher" type="xs:string" minOccurs="0"/>
+    <xs:element name="job" type="GrandioJobType" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+    <xs:complexType name="JobsContainerType">
       <xs:sequence>
         <xs:element name="job" type="GrandioJobType" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
-  </xs:element>
 
   <xs:complexType name="GrandioJobType">
-    <xs:sequence>
-      <xs:element name="businessProcessId" type="xs:string">
+    <xs:all minOccurs="0" maxOccurs="1">
+      <xs:element name="source" type="xs:string" minOccurs="0"/>
+      <xs:element name="company" type="xs:string" minOccurs="0"/>
+      <xs:element name="businessProcessId" type="xs:string" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Unique identifier for the job posting</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="jobCode" type="xs:string">
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="applyUrl" type="xs:anyURI"/>
+      <xs:element name="jobCode" type="xs:string" />
+      <xs:element name="title" type="xs:string" minOccurs="0"/>
+      <xs:element name="headline" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceCode" type="xs:string" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Job code containing language indicator (must include 'fr' or 'en')</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="title" type="xs:string"/>
-      <xs:element name="description" type="xs:string"/>
-      <xs:element name="applyUrl" type="xs:anyURI"/>
-      <xs:element name="Restaurant" type="xs:string">
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="applicationFormUrl" type="xs:anyURI"/>
+      <xs:element name="listDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="Restaurant" type="xs:string" minOccurs="0"/>
+      <xs:element name="division" type="xs:string" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Restaurant/Company name</xs:documentation>
         </xs:annotation>
@@ -39,14 +59,17 @@
           <xs:documentation>Employment type: Full-time, Part-time, Seasonal, etc.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="city" type="xs:string">
+      <xs:element name="streetAddress" type="xs:string" minOccurs="0"/>
+      <xs:element name="city" type="xs:string" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Comma-separated city names</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="state" type="xs:string"/>
+      <xs:element name="state" type="xs:string" minOccurs="0"/>
       <xs:element name="postalCode" type="xs:string" minOccurs="0"/>
-    </xs:sequence>
+      <xs:element name="country" type="xs:string" minOccurs="0"/>
+      <xs:element name="CareerPage" type="xs:string" minOccurs="0"/>
+    </xs:all>
   </xs:complexType>
 
 </xs:schema>

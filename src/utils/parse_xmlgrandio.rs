@@ -26,7 +26,9 @@ pub fn parse(file: &Bytes) -> Result<Vec<Job>, common::ParseError> {
 
 fn parse_into_jobs(document: &Document) -> Result<Vec<Job>, String> {
     let root = document.get_root_element().unwrap();
-    let children = root.get_child_elements();
+    let children = root
+        .findnodes("job")
+        .map_err(|e| format!("Error finding job nodes: {:?}", e))?;
     let jobs = children
         .iter()
         .map(|job| {
@@ -41,21 +43,48 @@ fn parse_into_jobs(document: &Document) -> Result<Vec<Job>, String> {
             }
 
             Job {
-                id: dictionary.get("businessProcessId").unwrap().to_string(),
-                schedule: dictionary.get("Schedule").unwrap().to_string(),
-                category: dictionary.get("Position").unwrap().to_string(),
-                city: dictionary.get("city").unwrap().to_string(),
-                province: dictionary.get("state").unwrap().to_string(),
+                id: dictionary
+                    .get("businessProcessId")
+                    .unwrap_or(&String::new())
+                    .to_string(),
+                schedule: dictionary
+                    .get("Schedule")
+                    .unwrap_or(&String::new())
+                    .to_string(),
+                category: dictionary
+                    .get("Position")
+                    .unwrap_or(&String::new())
+                    .to_string(),
+                city: dictionary.get("city").unwrap_or(&String::new()).to_string(),
+                province: dictionary
+                    .get("state")
+                    .unwrap_or(&String::new())
+                    .to_string(),
                 application_method: "url".to_string(),
-                application_destination: dictionary.get("applyUrl").unwrap().to_string(),
+                application_destination: dictionary
+                    .get("applyUrl")
+                    .unwrap_or(&String::new())
+                    .to_string(),
                 company: Company {
-                    name: dictionary.get("Restaurant").unwrap().to_string(),
+                    name: dictionary
+                        .get("Restaurant")
+                        .unwrap_or(&String::new())
+                        .to_string(),
                     ..Default::default()
                 },
                 translations: vec![Translation {
-                    language: dictionary.get("jobCode").unwrap().to_string(),
-                    title: dictionary.get("title").unwrap().to_string(),
-                    description: dictionary.get("description").unwrap().to_string(),
+                    language: dictionary
+                        .get("jobCode")
+                        .unwrap_or(&String::new())
+                        .to_string(),
+                    title: dictionary
+                        .get("title")
+                        .unwrap_or(&String::new())
+                        .to_string(),
+                    description: dictionary
+                        .get("description")
+                        .unwrap_or(&String::new())
+                        .to_string(),
                     ..Default::default()
                 }],
             }
