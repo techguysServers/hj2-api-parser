@@ -7,17 +7,18 @@
 
   <!-- Source wrapper (Folks ATS style) -->
   <xs:complexType name="SourceType">
-    <xs:sequence>
-      <xs:element name="publisher" type="xs:string" minOccurs="0"/>
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="lastBuildDate" type="xs:string" minOccurs="0"/>
       <xs:element name="publisherurl" type="xs:anyURI" minOccurs="0"/>
-      <xs:element name="job" type="JobType" maxOccurs="unbounded"/>
-    </xs:sequence>
+      <xs:element name="publisher" type="xs:string" minOccurs="0"/>
+      <xs:element name="job" type="JobType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:choice>
   </xs:complexType>
 
   <!-- Simple jobs wrapper -->
   <xs:complexType name="JobsContainerType">
-    <xs:sequence>
-      <xs:element name="job" type="JobType" maxOccurs="unbounded"/>
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="job" type="JobType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 
