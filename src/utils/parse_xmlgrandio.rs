@@ -42,6 +42,16 @@ fn parse_into_jobs(document: &Document) -> Result<Vec<Job>, String> {
                 child = current_child.get_next_sibling();
             }
 
+            // Extract locale from jobCode
+            // If jobCode anything with fr, locale is fr, else en
+            // Default to fr if no jobCode
+            let locale_node = dictionary.get("jobCode");
+
+            let locale = match locale_node {
+                Some(code) if code.to_lowercase().contains("fr") => String::from("fr"),
+                _ => String::from("en"),
+            };
+
             Job {
                 id: dictionary
                     .get("businessProcessId")
@@ -73,10 +83,7 @@ fn parse_into_jobs(document: &Document) -> Result<Vec<Job>, String> {
                     ..Default::default()
                 },
                 translations: vec![Translation {
-                    language: dictionary
-                        .get("jobCode")
-                        .unwrap_or(&String::new())
-                        .to_string(),
+                    language: locale,
                     title: dictionary
                         .get("title")
                         .unwrap_or(&String::new())

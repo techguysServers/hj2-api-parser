@@ -59,7 +59,12 @@ fn parse_into_jobs(document: &Document) -> Result<Vec<Job>, String> {
             let mut translations: Vec<Translation> = Vec::new();
 
             for title_node in titles {
-                let lang = title_node.get_attribute("lang").unwrap_or("en".to_string());
+                let locale_node = dictionary.get("jobCode");
+
+                let lang = match locale_node {
+                    Some(code) if code.to_lowercase().contains("fr") => String::from("fr"),
+                    _ => String::from("en"),
+                };
                 let title_content = title_node.get_content().to_string();
 
                 // Find existing translation with this language or create new one
